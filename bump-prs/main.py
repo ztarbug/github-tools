@@ -39,7 +39,10 @@ def output_as_table(data):
                 pr["updated_at"]
             ])
 
-    table = tabulate(rows, headers=["Author", "Title", "Repo", "Updated At"], tablefmt="github")
+    # Add row numbers with enumerate (starting at 1)
+    numbered_rows = [[i+1] + row for i, row in enumerate(rows)]
+
+    table = tabulate(numbered_rows, headers=["#", "Author", "Title", "Repo", "Updated At"], tablefmt="github")
     print(table)
 
 def main():
