@@ -39,6 +39,9 @@ def output_as_table(data):
                 pr["updated_at"]
             ])
 
+    # Sort by repo name (index 2), then by author (index 0)
+    rows.sort(key=lambda x: (x[2], x[0]))
+    
     # Add row numbers with enumerate (starting at 1)
     numbered_rows = [[i+1] + row for i, row in enumerate(rows)]
 
