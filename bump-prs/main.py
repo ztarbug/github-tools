@@ -1,5 +1,6 @@
 import os
 import requests
+import argparse
 from dotenv import load_dotenv
 from tabulate import tabulate
 
@@ -9,7 +10,7 @@ author="dependabot[bot]"
 
 def list_prs():
     result = {}
-    url=github_url + "/search/issues?q=org:" + orgname + "+type:pr+state:open"
+    url=github_url + "/search/issues?q=org:" + orgname + "+type:pr+state:open&per_page=100"
     headers = {}
     headers["Accept"] = "application/vnd.github+json"
     if(TOKEN):
@@ -28,9 +29,11 @@ def list_prs():
         })
     return result
 
-def output_as_table(data):
+def output_as_table(data, dependabot_only=False):
     rows = []
     for author, prs in data.items():
+        if dependabot_only and author != "dependabot[bot]":
+            continue
         for pr in prs:
             rows.append([
                 author,
@@ -49,11 +52,15 @@ def output_as_table(data):
     print(table)
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', action='store_true', help='Show only dependabot PRs')
+    args = parser.parse_args()
+    
     load_dotenv()
     global TOKEN
     TOKEN = os.getenv('TOKEN')
     pr_list = list_prs()
-    output_as_table(pr_list)
+    output_as_table(pr_list, args.d)
 
 
 if __name__ == "__main__":
