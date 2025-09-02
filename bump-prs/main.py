@@ -8,9 +8,9 @@ github_url="https://api.github.com"
 orgname="starwit"
 author="dependabot[bot]"
 
-def list_prs():
+def list_prs(org):
     result = {}
-    url=github_url + "/search/issues?q=org:" + orgname + "+type:pr+state:open&per_page=100"
+    url=github_url + "/search/issues?q=org:" + org + "+type:pr+state:open&per_page=100"
     headers = {}
     headers["Accept"] = "application/vnd.github+json"
     if(TOKEN):
@@ -54,12 +54,13 @@ def output_as_table(data, dependabot_only=False):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', action='store_true', help='Show only dependabot PRs')
+    parser.add_argument('-o', required=True, help='Organization name')
     args = parser.parse_args()
     
     load_dotenv()
     global TOKEN
     TOKEN = os.getenv('TOKEN')
-    pr_list = list_prs()
+    pr_list = list_prs(args.o)
     output_as_table(pr_list, args.d)
 
 
